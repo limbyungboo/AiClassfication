@@ -1,9 +1,7 @@
 package com.example;
 
-import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 
-import ai.djl.modality.cv.util.NDImageUtils;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDList;
 import ai.djl.ndarray.NDManager;
