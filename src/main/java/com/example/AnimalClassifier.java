@@ -1,33 +1,31 @@
 package com.example;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.file.Paths;
+
+import javax.imageio.ImageIO;
+
 import ai.djl.Device;
 import ai.djl.Model;
 import ai.djl.inference.Predictor;
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDList;
 import ai.djl.ndarray.NDManager;
+import ai.djl.ndarray.types.Shape;
+import ai.djl.nn.Activation;
+import ai.djl.nn.Block;
+import ai.djl.nn.Blocks;
+import ai.djl.nn.SequentialBlock;
+import ai.djl.nn.convolutional.Conv2d;
+import ai.djl.nn.core.Linear;
+import ai.djl.nn.pooling.Pool;
 import ai.djl.repository.zoo.Criteria;
 import ai.djl.repository.zoo.ZooModel;
 import ai.djl.training.util.ProgressBar;
 import ai.djl.translate.Batchifier;
 import ai.djl.translate.Translator;
 import ai.djl.translate.TranslatorContext;
-import ai.djl.nn.SequentialBlock;
-import ai.djl.nn.Blocks;
-import ai.djl.nn.core.Linear;
-import ai.djl.nn.norm.BatchNorm;
-import ai.djl.nn.pooling.Pool;
-import ai.djl.nn.convolutional.Conv2d;
-import ai.djl.nn.Activation;
-import ai.djl.ndarray.types.Shape;
-import ai.djl.nn.Block;
-import ai.djl.nn.BlockList;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Arrays;
 
 public class AnimalClassifier {
     private static final int TARGET_WIDTH = 150;

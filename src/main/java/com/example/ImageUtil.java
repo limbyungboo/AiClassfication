@@ -1,19 +1,19 @@
 package com.example;
 
-import ai.djl.modality.cv.util.NDImageUtils;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
+import javax.imageio.ImageIO;
+
 import ai.djl.ndarray.NDArray;
 import ai.djl.ndarray.NDManager;
 import ai.djl.ndarray.types.DataType;
 import ai.djl.ndarray.types.Shape;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.Image;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class ImageUtil {
     public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
