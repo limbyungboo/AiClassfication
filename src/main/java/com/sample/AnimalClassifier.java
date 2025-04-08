@@ -80,9 +80,6 @@ public class AnimalClassifier {
                 .optDevice(Device.cpu())
                 .optProgress(new ProgressBar())
                 .build();
-		
-		
-		
 		return criteria.loadModel();
 	}
 	
@@ -111,7 +108,7 @@ public class AnimalClassifier {
     	try {
     		AnimalClassifier test = new AnimalClassifier();
     		
-        	String testImgDir = "C:/001.dev/999.workspace/Ai_Sample1/training_data/dataset/test";
+        	String testImgDir = "training_data/dataset/test";
         	
         	File f = new File(testImgDir);
         	File[] images = f.listFiles();
