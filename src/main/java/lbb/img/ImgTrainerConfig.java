@@ -30,11 +30,11 @@ import org.nd4j.linalg.lossfunctions.LossFunctions;
  */
 public class ImgTrainerConfig {
 	
-    public static final int IMAGE_HEIGHT = 150;
-    public static final int IMAGE_WIDTH = 150;
+    public static final int IMAGE_HEIGHT = 100;
+    public static final int IMAGE_WIDTH = 100;
     public static final int IMAGE_CHANNELS = 3;
     public static final int BATCH_SIZE = 32;
-    public static final int EPOCHS = 10;
+    public static final int EPOCHS = 30;
     public static final double UNKNOWN_THRESHOLD = 0.6;
     
     public static final String PYTHON_FILE =  "C:/999.python/PyChatGpt/machine_learning/img_download.py";

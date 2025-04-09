@@ -8,7 +8,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.datavec.image.loader.NativeImageLoader;
@@ -104,13 +106,23 @@ public class ImgTrainer extends Trainer{
 //		}
 		
 		//학습
-		ImageRecordReader recordReader = ImgTrainerConfig.recordReader();
-		labels = recordReader.getLabels();
+//		ImageRecordReader recordReader = ImgTrainerConfig.recordReader();
+//		labels = recordReader.getLabels();
+//		
+//		DataSetIterator dataIter = ImgTrainerConfig.trainingDataSet(recordReader);
 		
-		DataSetIterator dataIter = ImgTrainerConfig.trainingDataSet(recordReader);
+		File trainingDir = ImgTrainerConfig.TRAINING_DATA_DIR;
+		int width = ImgTrainerConfig.IMAGE_WIDTH;
+		int height = ImgTrainerConfig.IMAGE_HEIGHT;
+		int channels = ImgTrainerConfig.IMAGE_CHANNELS;
+		int batchSize = ImgTrainerConfig.BATCH_SIZE;
+		Map<String, Integer> labelIndexMap = new HashMap<>();
+		
+		DataSetIterator dataIter = ResizeImageDataSetIterator.createIterator(trainingDir, width, height, channels, batchSize, labelIndexMap);
 		
 		if(model == null) {
-			model = new MultiLayerNetwork(ImgTrainerConfig.configuration(recordReader.numLabels()));
+			//model = new MultiLayerNetwork(ImgTrainerConfig.configuration(recordReader.numLabels()));
+			model = new MultiLayerNetwork(ImgTrainerConfig.configuration(labelIndexMap.size()));
 			model.init();
 			model.setListeners(new ScoreIterationListener(10));
 		}
@@ -135,55 +147,55 @@ public class ImgTrainer extends Trainer{
 	/**@Override 
 	 * @see lbb.Trainer#predict(java.io.File)
 	 */
-//	@Override
-//	public String predict(File imgFile) throws Exception {
-//		if(model == null || labels == null || labels.size() == 0) {
-//			throw new Exception("아직 학습을 진행하지 않았습니다. 먼저 학습을 진행해 주세요");
-//		}
-//		NativeImageLoader loader = new NativeImageLoader(ImgTrainerConfig.IMAGE_HEIGHT, ImgTrainerConfig.IMAGE_WIDTH, ImgTrainerConfig.IMAGE_CHANNELS);
-//		INDArray image = loader.asMatrix(imgFile);
-//		int[] preInt = model.predict(image);
-//		ImagePreProcessingScaler scaler = new ImagePreProcessingScaler(0, 1);
-//		scaler.transform(image);
-//		
-////		DataSet a = new DataSet();
-////		a.setFeatures(image)
-//		preInt = model.predict(image);
-//
-//		INDArray output = model.output(image, false);
-//		int predictedClassIdx = Nd4j.argMax(output, 1).getInt(0);
-//		return labels.get(predictedClassIdx);
-//	}
 	@Override
 	public String predict(File imgFile) throws Exception {
 		if(model == null || labels == null || labels.size() == 0) {
 			throw new Exception("아직 학습을 진행하지 않았습니다. 먼저 학습을 진행해 주세요");
 		}
-		List<BufferedImage> imgList = ImageUtils.cutBoxObject(imgFile);
+		NativeImageLoader loader = new NativeImageLoader(ImgTrainerConfig.IMAGE_HEIGHT, ImgTrainerConfig.IMAGE_WIDTH, ImgTrainerConfig.IMAGE_CHANNELS);
+		INDArray image = loader.asMatrix(imgFile);
+		int[] preInt = model.predict(image);
+		ImagePreProcessingScaler scaler = new ImagePreProcessingScaler(0, 1);
+		scaler.transform(image);
 		
-		String result = "";
-		System.out.println(">> object length = " + imgList.size());
-		
-		for(BufferedImage img : imgList) {
-			NativeImageLoader loader = new NativeImageLoader(ImgTrainerConfig.IMAGE_HEIGHT, ImgTrainerConfig.IMAGE_WIDTH, ImgTrainerConfig.IMAGE_CHANNELS);
-			INDArray image = loader.asMatrix(img);
-			ImagePreProcessingScaler scaler = new ImagePreProcessingScaler(0, 1);
-			scaler.transform(image);
-			
-			INDArray output = model.output(image, false);
-			int predictedClassIdx = Nd4j.argMax(output, 1).getInt(0);
-			double confidence = output.getDouble(0, predictedClassIdx);
-			System.out.println(String.format("예측확률 : [%s], 예측Class : [%s]", Double.toString(confidence), labels.get(predictedClassIdx)));
-			
-			if (confidence < ImgTrainerConfig.UNKNOWN_THRESHOLD) {
-				result = result + "UNKNOWN >> ";
-			}
-			else {
-				result = result + labels.get(predictedClassIdx) + " >> ";
-			}
-		}
-		return result;
+//		DataSet a = new DataSet();
+//		a.setFeatures(image)
+		preInt = model.predict(image);
+
+		INDArray output = model.output(image, false);
+		int predictedClassIdx = Nd4j.argMax(output, 1).getInt(0);
+		return labels.get(predictedClassIdx);
 	}
+//	@Override
+//	public String predict(File imgFile) throws Exception {
+//		if(model == null || labels == null || labels.size() == 0) {
+//			throw new Exception("아직 학습을 진행하지 않았습니다. 먼저 학습을 진행해 주세요");
+//		}
+//		List<BufferedImage> imgList = ImageUtils.cutBoxObject(imgFile);
+//		
+//		String result = "";
+//		System.out.println(">> object length = " + imgList.size());
+//		
+//		for(BufferedImage img : imgList) {
+//			NativeImageLoader loader = new NativeImageLoader(ImgTrainerConfig.IMAGE_HEIGHT, ImgTrainerConfig.IMAGE_WIDTH, ImgTrainerConfig.IMAGE_CHANNELS);
+//			INDArray image = loader.asMatrix(img);
+//			ImagePreProcessingScaler scaler = new ImagePreProcessingScaler(0, 1);
+//			scaler.transform(image);
+//			
+//			INDArray output = model.output(image, false);
+//			int predictedClassIdx = Nd4j.argMax(output, 1).getInt(0);
+//			double confidence = output.getDouble(0, predictedClassIdx);
+//			System.out.println(String.format("예측확률 : [%s], 예측Class : [%s]", Double.toString(confidence), labels.get(predictedClassIdx)));
+//			
+//			if (confidence < ImgTrainerConfig.UNKNOWN_THRESHOLD) {
+//				result = result + "UNKNOWN >> ";
+//			}
+//			else {
+//				result = result + labels.get(predictedClassIdx) + " >> ";
+//			}
+//		}
+//		return result;
+//	}
 	
 	/**
 	 * 파이선 연동 : 이미지 데이터를 웹에서 검색하여 다운로드함
