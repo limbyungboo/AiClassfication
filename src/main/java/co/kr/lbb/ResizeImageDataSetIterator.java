@@ -3,14 +3,11 @@
  */
 package co.kr.lbb;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import org.datavec.image.loader.NativeImageLoader;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
@@ -55,12 +52,6 @@ public class ResizeImageDataSetIterator {
             }
 
             for (File imgFile : imageFiles) {
-//                BufferedImage img = ImageIO.read(imgFile);
-//            	//BufferedImage img = ImageUtils.resizeAndPadImage(imgFile, width, height);
-//                if (img == null) {
-//                	continue;
-//                }
-
                 // Resize and convert to INDArray
                 INDArray feature = loader.asMatrix(imgFile);
                 scaler.transform(feature);
